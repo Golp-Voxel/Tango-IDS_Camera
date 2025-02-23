@@ -1,0 +1,6 @@
+@echo off
+call "C:\Users\User\Desktop\Golpe_Voxel\Tango-IDS_Camera\tango-env\Scripts\activate.bat"
+
+cd C:\Users\User\Desktop\Golpe_Voxel\Tango-IDS_Camera
+
+pythonC:\Users\User\Desktop\Golpe_Voxel\Tango-IDS_Camera\IDS_Camera %* 2>&1

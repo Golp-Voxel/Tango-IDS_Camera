@@ -3,6 +3,6 @@
 /Native_64_lib
 /tango-env
 /thorlabs_tsi_sdk
-ThorlabsC.bat
+*.bat
 setting.ini
 *.code-workspace
