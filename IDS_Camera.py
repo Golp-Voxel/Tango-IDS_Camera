@@ -71,7 +71,7 @@ class IDS_Camera(Device):
     # ----------
 
     ExposureTime = attribute(
-        dtype='DevUShort',
+        dtype='DevDouble',
         access=AttrWriteType.READ_WRITE,
         label="Exposure time of the camera",
         unit="ms",
@@ -175,8 +175,8 @@ class IDS_Camera(Device):
     def write_ExposureTime(self, value):
         # PROTECTED REGION ID(IDS_Camera.ExposureTime_write) ENABLED START #
         """Set the ExposureTime attribute."""
-        self._exposure_time = value
-        microseconds = int(float(value)*1000)
+        self._exposure_time = value # change this on the pogo file to float 
+        microseconds = int(float(value)*1000) 
         self.remote_device_nodemap.FindNode("ExposureTime").SetValue(microseconds) # in microseconds
         pass
         # PROTECTED REGION END #    //  IDS_Camera.ExposureTime_write
