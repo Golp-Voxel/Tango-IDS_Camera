@@ -121,13 +121,13 @@ class IDS_Camera(Device):
         device_descriptors = device_manager.Devices()
         if len(device_descriptors) > 0:
             for device_descriptor in device_descriptors:
-                print(device_descriptor.DisplayName())
                 if self.CameraID in device_descriptor.DisplayName():
                     self.device = device_descriptor.OpenDevice(ids_peak.DeviceAccessType_Control)
                     self.remote_device_nodemap = self.device.RemoteDevice().NodeMaps()[0]
                     print("Opened Device: " + self.device.DisplayName())
             if self.remote_device_nodemap == None:
                 print("Problem connecting to the camera")
+                print(f" ID  {device_descriptor.ID()}")
                 return
         
         self.remote_device_nodemap.FindNode("TriggerSelector").SetCurrentEntry("ExposureStart")
@@ -266,6 +266,7 @@ class IDS_Camera(Device):
         # PROTECTED REGION END #    //  IDS_Camera.StopAcqusition
 
     @command(
+            dtype_out='DevString'
     )
     @DebugIt()
     def Snap(self):
@@ -274,8 +275,7 @@ class IDS_Camera(Device):
         Takes a image and send it to the user
         :rtype: PyTango.DevVoid
         """
-        self.get_image()
-        pass
+        return f"{self.get_image()[1]}"
         # PROTECTED REGION END #    //  IDS_Camera.Snap
 
 # ----------
@@ -284,20 +284,28 @@ class IDS_Camera(Device):
 
 # PROTECTED REGION ID(IDS_Camera.custom_code) ENABLED START #
     def get_image(self):
+        state_operation: bool = True
+        err: str = ""
         self.remote_device_nodemap.FindNode("TriggerSoftware").Execute()
         buffer = self.datastream.WaitForFinishedBuffer(100)
-
+        
         # convert to RGB
-        raw_image = ids_ipl_extension.BufferToImage(buffer)
+        try:
+            raw_image = ids_ipl_extension.BufferToImage(buffer)
 
-        color_image = raw_image.ConvertTo(ids_ipl.PixelFormatName_Mono8)
-        self.datastream.QueueBuffer(buffer)
-        picture = color_image.get_numpy_3D()
+            color_image = raw_image.ConvertTo(ids_ipl.PixelFormatName_Mono8)
+            self.datastream.QueueBuffer(buffer)
+            picture = color_image.get_numpy_3D()
 
-        t_image = np.array(picture,dtype = np.uint16)
-        self._image = t_image[:, :, 0]
+            t_image = np.array(picture,dtype = np.uint16)
+            self._image = t_image[:, :, 0]
+        except:
+            state_operation = False
+            err = "The camera needs to be connected to a usb3 port on the PC"
+ 
 
-        return
+
+        return state_operation, err
 # PROTECTED REGION END #    //  IDS_Camera.custom_code
 
 

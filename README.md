@@ -18,6 +18,7 @@ After activating it you can install all the models to run this tool by using the
 
 ```
 pip install -r Requirements.txt
+pip install ids-peak-afl
 ```
 
 It is possible to snap a picture (using the function .Snap()) and it get it from the atribute Image.
