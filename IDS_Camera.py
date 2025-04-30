@@ -76,7 +76,7 @@ class IDS_Camera(Device):
         label="Exposure time of the camera",
         unit="ms",
         display_unit="ms",
-        doc="Exposure time of the camera  in ms ",
+        doc="Exposure time of the camera  in ms",
     )
 
     Gain = attribute(
@@ -107,7 +107,7 @@ class IDS_Camera(Device):
     def init_device(self):
         """Initializes the attributes and properties of the IDS_Camera."""
         Device.init_device(self)
-        self._exposure_time = 20
+        self._exposure_time = 20.0
         self._gain = 0.0
         self._frames_trigger = 0
         self._r_oi = (0,)
@@ -266,7 +266,6 @@ class IDS_Camera(Device):
         # PROTECTED REGION END #    //  IDS_Camera.StopAcqusition
 
     @command(
-            dtype_out='DevString'
     )
     @DebugIt()
     def Snap(self):
